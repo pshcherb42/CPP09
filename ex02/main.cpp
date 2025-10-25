@@ -17,7 +17,28 @@ void printVector(const std::vector<int>& v) {
     std::cout << std::endl;
 }
 
+std::vector<int> fordJohnson(std::vector<int> nums) {
+    size_t i;
+    std::vector<Pair> pairs;
+    std::vector<int> mainvec;
+    std::vector<int> pendvec;
+    int impar = -1;
+    for (i = 0; i + 1 < nums.size(); i += 2) {
+        int a = nums[i];
+        int b = nums[i + 1];
+        if ( a > b ) {
+            pairs.push_back({a, b});
+        }
+        else 
+            pairs.push_back({b, a});
+    }
 
+    if (nums.size() % 2 == 1) {
+        impar = nums[i];
+    }
+    
+
+}
 
 int main(int argc, char** argv) {
     if (argc < 2) {
