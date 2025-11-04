@@ -4,40 +4,26 @@
 #include <algorithm>
 #include <vector>
 
-struct Pair {
-    int larger;
-    int smaller;
-};
-
-void printVector(const std::vector<int>& v) {
-    for (size_t i = 0; i < v.size(); ++i) {
-        std::cout << v[i];
-        if (i < v.size() - 1) std::cout << " ";
+void print_vector(const std::vector<int>& num) {
+    for (std::vector<int>::const_iterator it = num.begin(); it != num.end(); ++it) {
+        std::cout << *it << ' ';
     }
-    std::cout << std::endl;
+    std::cout << '\n';
 }
 
-std::vector<int> fordJohnson(std::vector<int> nums) {
-    size_t i;
-    std::vector<Pair> pairs;
-    std::vector<int> mainvec;
-    std::vector<int> pendvec;
-    int impar = -1;
-    for (i = 0; i + 1 < nums.size(); i += 2) {
-        int a = nums[i];
-        int b = nums[i + 1];
-        if ( a > b ) {
-            pairs.push_back({a, b});
+bool already_sorted(const std::vector<int>& num) {
+    size_t count = 1;
+    for (std::vector<int>::const_iterator it = num.begin(); (it + 1) != num.end(); ++it) {
+        int a = *it;
+        int b = *it + 1;
+        if (a < b) {
+            count++;
         }
-        else 
-            pairs.push_back({b, a});
     }
-
-    if (nums.size() % 2 == 1) {
-        impar = nums[i];
+    if (count == num.size()) {
+        return 1;
     }
-    
-
+    return 0;
 }
 
 int main(int argc, char** argv) {
@@ -45,12 +31,28 @@ int main(int argc, char** argv) {
         std::cerr << "Error: no arguments\n";
         return 1;
     }
+    if (argc == 2) {
+        std::cerr << "Error: write more arguments\n";
+        return 1;
+    }
     
     std::set<int> seen;
     std::vector<int> numbers;
 
     for (int i = 1; i < argc; ++i) {
-        int num = std::stoi(argv[i]);
+        char* endptr = NULL;
+        errno = 0;
+        long val = std::strtol(argv[i], &endptr, 10);
+        if (*endptr != '\0') {
+            std::cerr << "Error: non-digit character\n";
+            return 1;
+        }
+        if (errno == ERANGE || val > INT_MAX || val < INT_MIN) {
+            std::cerr << "Error: number out of range\n";
+            return 1;
+        }
+        int num = static_cast<int>(val);
+        
         if (num < 0) {
             std::cerr << "Error: negative numbers\n";
             return 1;
@@ -60,5 +62,10 @@ int main(int argc, char** argv) {
             return 1;
         }
         numbers.push_back(num);
+    }
+    print_vector(numbers);
+    if (already_sorted(numbers)) {
+        std::cerr << "Error: numbers are already sorted\n";
+        return 1;
     }
 }
