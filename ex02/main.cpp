@@ -3,19 +3,22 @@
 #include <set>
 #include <algorithm>
 #include <vector>
+#include <ctime>
 
-void print_vector(const std::vector<int>& num) {
-    for (std::vector<int>::const_iterator it = num.begin(); it != num.end(); ++it) {
+void print_vector(std::vector<int>& num) {
+    for (std::vector<int>::iterator it = num.begin(); it != num.end(); ++it) {
         std::cout << *it << ' ';
     }
     std::cout << '\n';
 }
 
+
+
 bool already_sorted(const std::vector<int>& num) {
     size_t count = 1;
     for (std::vector<int>::const_iterator it = num.begin(); (it + 1) != num.end(); ++it) {
         int a = *it;
-        int b = *it + 1;
+        int b = *(it + 1);
         if (a < b) {
             count++;
         }
@@ -26,7 +29,19 @@ bool already_sorted(const std::vector<int>& num) {
     return 0;
 }
 
+void sort_vector(std::vector<int>& numbers) {
+    // sort vector
+    // divide numbers in pairs and compare them and then swap
+    for (size_t i = 0; i + 1 < numbers.size(); i += 2) {
+        if (numbers[i] > numbers[i + 1]) {
+            std::swap(numbers[i], numbers[i + 1]);
+        }
+    }
+    print_vector(numbers);
+}
+
 int main(int argc, char** argv) {
+    // error checks
     if (argc < 2) {
         std::cerr << "Error: no arguments\n";
         return 1;
@@ -63,9 +78,15 @@ int main(int argc, char** argv) {
         }
         numbers.push_back(num);
     }
-    print_vector(numbers);
+    
     if (already_sorted(numbers)) {
         std::cerr << "Error: numbers are already sorted\n";
         return 1;
     }
+    // sorting
+    clock_t before = clock();
+    print_vector(numbers);
+    sort_vector(numbers);
+    clock_t after = clock() - before;
+    std::cout << "duration:" << (float)after / CLOCKS_PER_SEC << std::endl;
 }
