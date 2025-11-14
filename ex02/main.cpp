@@ -29,6 +29,41 @@ bool already_sorted(const std::vector<int>& num) {
     return 0;
 }
 
+void build_main_and_pend(std::vector<int>& numbers, std::vector<int>& main_seq, std::vector<int>& pend, size_t block_len) {
+    size_t n = numbers.size();
+    main_seq.clear();
+    (void)pend.clear();
+    
+    // push al main las sequencias b1 y a1
+    size_t i = 0;
+    // we pushed first two elements in main
+    while (i < block_len * 2) {
+        main_seq.push_back(numbers[i]);
+        i++;
+    }
+    
+    // i now is at the beningin of the b2 block
+    // on the last(first here, the 4th one in the example) recursion it doesnt enter the loop whcih is perfecto
+    while (i + block_len < n) {
+            //std::cout << i << "\n";
+            size_t b_block_start = i;
+            size_t a_block_start = i + block_len;
+            // insertar bloque b en pend y bloque a en main
+            for (size_t k = 0; k < block_len && b_block_start + k < n; ++k) {
+                pend.push_back(numbers[b_block_start + k]);
+            }
+            for (size_t k = 0; k < block_len && a_block_start + k < n; ++k) {
+                main_seq.push_back(numbers[a_block_start + k]);
+            }
+           i += 2 * block_len;
+        }
+    std::cout << "main: ";
+    print_vector(main_seq);
+    std::cout << "\n" << "pend: ";
+    print_vector(pend);
+    std::cout << "\n";
+}
+
 void sort_vector(std::vector<int>& numbers, size_t recursion_lvl) {
     size_t n = numbers.size();
     if ((recursion_lvl * 2) >= n) return;
@@ -38,13 +73,15 @@ void sort_vector(std::vector<int>& numbers, size_t recursion_lvl) {
                 std::swap(numbers[i], numbers[i + 1]);
             }
         }
-        print_vector(numbers);
     }
     size_t block_len = std::pow(2, recursion_lvl - 1);
-    if (block_len * 2 > n) return;
+    if (block_len * 2 > n) {
+        //std::cout << "fin de la recursion\n";
+        return ;
+    }
     if (recursion_lvl > 1) {
         for (size_t i = 0; i + block_len < n; i += 2 * block_len) {
-            std::cout << i << "\n";
+            //std::cout << i << "\n";
             size_t first_block_start = i;
             size_t second_block_start = i + block_len;
             if (second_block_start + block_len > n) continue;
@@ -55,11 +92,12 @@ void sort_vector(std::vector<int>& numbers, size_t recursion_lvl) {
                     std::swap (numbers[first_block_start + k], numbers[second_block_start + k]);
                 }
             }
-            print_vector(numbers);
         }
-        
     }
     sort_vector(numbers, recursion_lvl + 1);
+    std::vector<int> main_seq, pend;
+    build_main_and_pend(numbers, main_seq, pend, block_len);
+    //insert_pend_using_jacobsthal(main_seq, pend);
 }
 
 int main(int argc, char** argv) {
