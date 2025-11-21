@@ -29,34 +29,40 @@ bool already_sorted(const std::vector<int>& num) {
     return 0;
 }
 
+/*void insert_pend_using_jacobsthal(std::vector<int>& main_seq, std::vector<int>& pend) {
+    if (pend.empty()) return;
+    // primero definir jacobstal number
+    // binary search
+    // binary insertion sort
+}*/
+
 void build_main_and_pend(std::vector<int>& numbers, std::vector<int>& main_seq, std::vector<int>& pend, size_t block_len) {
     size_t n = numbers.size();
     main_seq.clear();
-    (void)pend.clear();
-    
-    // push al main las sequencias b1 y a1
+    pend.clear();
     size_t i = 0;
-    // we pushed first two elements in main
     while (i < block_len * 2) {
         main_seq.push_back(numbers[i]);
         i++;
     }
-    
-    // i now is at the beningin of the b2 block
-    // on the last(first here, the 4th one in the example) recursion it doesnt enter the loop whcih is perfecto
-    while (i + block_len < n) {
-            //std::cout << i << "\n";
-            size_t b_block_start = i;
-            size_t a_block_start = i + block_len;
-            // insertar bloque b en pend y bloque a en main
-            for (size_t k = 0; k < block_len && b_block_start + k < n; ++k) {
-                pend.push_back(numbers[b_block_start + k]);
-            }
-            for (size_t k = 0; k < block_len && a_block_start + k < n; ++k) {
-                main_seq.push_back(numbers[a_block_start + k]);
-            }
-           i += 2 * block_len;
+    while (i + 2 * block_len <= n) {
+        size_t b_block_start = i;
+        size_t a_block_start = i + block_len;
+        for (size_t k = 0; k < block_len && b_block_start + k < n; ++k) {
+            pend.push_back(numbers[b_block_start + k]);
         }
+        for (size_t k = 0; k < block_len && a_block_start + k < n; ++k) {
+            main_seq.push_back(numbers[a_block_start + k]);
+        }
+        i += 2 * block_len;
+    }
+    if (i < n) {
+        while(i < n) {
+            pend.push_back(numbers[i]);
+            i++;
+        }
+    }
+   // insert_pend_using_jacobsthal(main_seq, pend);
     std::cout << "main: ";
     print_vector(main_seq);
     std::cout << "\n" << "pend: ";
