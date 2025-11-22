@@ -29,12 +29,12 @@ bool already_sorted(const std::vector<int>& num) {
     return 0;
 }
 
-/*void insert_pend_using_jacobsthal(std::vector<int>& main_seq, std::vector<int>& pend) {
+void insert_pend_using_jacobsthal(std::vector<int>& main_seq, std::vector<int>& pend) {
     if (pend.empty()) return;
     // primero definir jacobstal number
     // binary search
     // binary insertion sort
-}*/
+}
 
 void build_main_and_pend(std::vector<int>& numbers, std::vector<int>& main_seq, std::vector<int>& pend, size_t block_len) {
     size_t n = numbers.size();
@@ -62,7 +62,7 @@ void build_main_and_pend(std::vector<int>& numbers, std::vector<int>& main_seq, 
             i++;
         }
     }
-   // insert_pend_using_jacobsthal(main_seq, pend);
+    insert_pend_using_jacobsthal(main_seq, pend);
     std::cout << "main: ";
     print_vector(main_seq);
     std::cout << "\n" << "pend: ";
