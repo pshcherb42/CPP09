@@ -33,9 +33,22 @@ bool already_sorted(const std::vector<int>& num) {
 	return 0;
 }
 
+int binary_search(std::vector<int> stack, int needle, int low, int high) {
+	/*std::cout << high << std::endl;
+	std::cout << needle << std::endl;*/
+	while (low < high) {
+		int mid = low + (high - low) / 2;
+		if (stack[mid] < needle)
+			low = mid + 1;
+		else
+			high = mid - 1;
+	}
+	return high;
+}
+
 //long _jacobsthal_number(long n) { return round((pow(2, n + 1) + pow(-1, n)) / 3); }
 
-/*void insert_pend_using_jacobsthal(std::vector<int>& main_seq, std::vector<int>& pend, int block_len) {
+void insert_pend_using_jacobsthal(std::vector<int>& main_seq, std::vector<int>& pend, int block_len) {
 	if (pend.empty()) return;
 	// primero definir jacobstal number
 	//int jac_num = _jacobsthal_number(1);
@@ -47,9 +60,27 @@ bool already_sorted(const std::vector<int>& num) {
 		max_values.push_back(main_seq[i]);
 		indices.push_back(i);
 	}
-	
+	int loc = binary_search(max_values, pend[pend.size() - 1], 0, static_cast<int>(max_values.size()));
+	// Determine the insertion position in main_seq
+    size_t insert_pos = indices[loc];
+
+    // Extract the last block_len elements from pend
+    std::vector<int> block_to_insert(pend.end() - block_len, pend.end());
+
+    // Shift elements in main_seq to the right to make space for the new block
+    main_seq.insert(main_seq.begin() + insert_pos + 1, block_to_insert.begin(), block_to_insert.end());
+
+    // Remove the inserted elements from pend
+    pend.erase(pend.end() - block_len, pend.end());
+	/*std::cout << max_values[loc] << "\n";
+	std::cout << indices[loc] << "\n";
+	std::cout << main_seq[indices[loc]] << "\n";
+	print_vector(indices);
+	print_vector(max_values);*/
+	print_vector(main_seq);
+	print_vector(pend);
 	// binary insertion sort
-}*/
+}
 
 void build_main_and_pend(std::vector<int>& numbers, std::vector<int>& main_seq, std::vector<int>& pend, size_t block_len) {
 	size_t n = numbers.size();
@@ -96,7 +127,7 @@ void build_main_and_pend(std::vector<int>& numbers, std::vector<int>& main_seq, 
 	std::cout << "\n" << "non aticipating: ";
 	print_vector(non_participating);
 	std::cout << "\n";
-	//insert_pend_using_jacobsthal(main_seq, pend, block_len);
+	insert_pend_using_jacobsthal(main_seq, pend, block_len);
 }
 
 void sort_vector(std::vector<int>& numbers, size_t recursion_lvl) {
