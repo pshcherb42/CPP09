@@ -32,15 +32,28 @@ bool already_sorted(const std::vector<int>& num) {
 	return 0;
 }
 
+int binarySearch(std::vector<int>& main_block_maxes, int item, int low, int high) {
+    while (low <= high) {
+        int mid = low + (high - low) / 2;
+        if (item > main_block_maxes[mid]) {
+            low = mid + 1;
+        } else {
+            high = mid - 1;
+        }
+    }
+    return low;
+}
+
 long _jacobsthal_number(long n) { return round((pow(2, n + 1) + pow(-1, n)) / 3); }
 
-void insert_pend_using_jacobsthal(std::vector<int>& main_seq, std::vector<int>& pend) {
+void insert_pend_using_jacobsthal(std::vector<int>& main_seq, std::vector<int>& pend, int block_len) {
 	if (pend.empty()) return;
 	// primero definir jacobstal number
-	int jac_num = _jacobsthal_number(1);
+	int jac_num = 3;
 	// binary search
-	int prev_jacobsthal = _jacobsthal_number(1);
-    
+	//int prev_jacobsthal = _jacobsthal_number(1);
+    int item = pend.at(block_len * 2);
+    int loc = binarySearch(main_seq, item, 0, jac_num * block_len);
 	// binary insertion sort
 }
 
@@ -70,7 +83,7 @@ void build_main_and_pend(std::vector<int>& numbers, std::vector<int>& main_seq, 
 			i++;
 		}
 	}
-	insert_pend_using_jacobsthal(main_seq, pend);
+	insert_pend_using_jacobsthal(main_seq, pend, block_len);
 	std::cout << "main: ";
 	print_vector(main_seq);
 	std::cout << "\n" << "pend: ";
