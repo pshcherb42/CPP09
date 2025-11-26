@@ -8,6 +8,8 @@
 #include <climits>
 #include <cmath>
 
+static int nbr_of_comps; 
+
 template <typename T> 
 void print_vector(std::vector<T>& num) {
 	for (typename std::vector<T>::iterator it = num.begin(); it != num.end(); ++it) {
@@ -34,66 +36,76 @@ bool already_sorted(const std::vector<int>& num) {
 }
 
 int binary_search(std::vector<int> stack, int needle, int low, int high) {
-	/*std::cout << high << std::endl;
-	std::cout << needle << std::endl;*/
 	while (low < high) {
 		int mid = low + (high - low) / 2;
 		if (stack[mid] < needle)
 			low = mid + 1;
 		else
-			high = mid - 1;
+			high = mid;
 	}
-	return high;
+	return low;
 }
 
 long _jacobsthal_number(long n) { return round((pow(2, n + 1) + pow(-1, n)) / 3); }
 
 void insert_pend_using_jacobsthal(std::vector<int>& main_seq, std::vector<int>& pend, int block_len) {
 	if (pend.empty()) return;
-	// primero definir jacobstal number
 	int curr_jac = 3;
-    size_t idx;
-    int loc;
-	// binary search
-	//int prev_jacobsthal = _jacobsthal_number(1);
+	size_t idx;
+	int loc;
 	std::vector<int> max_values;
 	std::vector<size_t> indices;
-    for (size_t i = block_len - 1; i < main_seq.size(); i += block_len) {
+	for (size_t i = block_len - 1; i < main_seq.size(); i += block_len) {
 		max_values.push_back(main_seq[i]);
 		indices.push_back(i);
-    }
-    while(!pend.empty()) {
-        idx = _jacobsthal_number(curr_jac) - _jacobsthal_number(curr_jac - 1);
-        if (idx * block_len > pend.size())
-            idx = _jacobsthal_number(curr_jac - 1) - _jacobsthal_number(curr_jac - 2);;
-        while (idx) {
-            loc = binary_search(max_values, pend[block_len * idx - 1], 0, static_cast<int>(max_values.size()));
-            size_t insert_pos = indices[loc];
-            std::vector<int> block_to_insert(pend.begin() + block_len * (idx - 1), pend.begin() + block_len * idx);
-            std::cout << idx << "\n";
-            std::cout << curr_jac << "\n";
-            print_vector(block_to_insert);
-            std::cout << "insert pos: " << insert_pos << "\n";
-
-            main_seq.insert(main_seq.begin() + insert_pos + 1, block_to_insert.begin(), block_to_insert.end());
-            pend.erase(pend.begin() + block_len * (idx - 1), pend.begin() + block_len * idx);
-            idx--;
-            std::cout << "cucu" << "\n";
-        }
-        curr_jac++;
-        std::cout << "main: ";
-        print_vector(main_seq);
-        std::cout << "\n" << "pend: ";
-        print_vector(pend);
-        std::cout << "\n";
-    }
-	/*std::cout << "indices: "; 
-    print_vector(indices);
-    std::cout << "\n";
-    std::cout << "maxes: ";
-    print_vector(max_values);
-    std::cout << "\n";*/
-	// binary insertion sort
+	}
+	std::cout << "max_values: ";
+	print_vector(max_values);
+	std::cout << "indices: ";
+	print_vector(indices);
+	while(!pend.empty()) {
+		idx = _jacobsthal_number(curr_jac) - _jacobsthal_number(curr_jac - 1);
+		std::cout << "idx: " << idx << "\n";
+		if (idx * block_len > pend.size()) {
+			idx = _jacobsthal_number(curr_jac - 1) - _jacobsthal_number(curr_jac - 2);
+			std::cout << "new index: " << idx << "\n";
+		} 
+		idx = std::min(idx, pend.size() / block_len);
+		while (idx) {
+			std::cout << "idx dentro de loop: " << idx << std::endl;
+			loc = binary_search(max_values, pend[block_len * idx - 1], 0, static_cast<int>(max_values.size()));
+			std::cout << "pend[block_len * idx - 1]: "<< pend[block_len * idx - 1] << "\n";
+			std::cout << "loc: " << loc << "\n";
+			std::vector<int> block_to_insert(pend.begin() + block_len * (idx - 1), pend.begin() + block_len * idx);
+			std::cout << "block_to_insert: ";
+			print_vector(block_to_insert);
+			if (pend[block_len * idx - 1] < max_values[0]) {
+				main_seq.insert(main_seq.begin(), block_to_insert.begin(), block_to_insert.end());
+			} else {
+				size_t insert_pos = indices[loc - 1];
+				std::cout << "insert_pos: " << insert_pos << "\n";
+				std::cout << "posicion de insercion: " << main_seq[insert_pos + 1] << "\n";
+				main_seq.insert(main_seq.begin() + insert_pos + 1, block_to_insert.begin(), block_to_insert.end());
+				std::cout << "main_seq dentro de loop: ";
+				print_vector(main_seq);
+			}
+			pend.erase(pend.begin() + block_len * (idx - 1), pend.begin() + block_len * idx);
+			std::cout << "pend dentro de loop: ";
+			print_vector(pend);
+			max_values.clear();
+			indices.clear();
+			for (size_t i = block_len - 1; i < main_seq.size(); i += block_len) {
+				max_values.push_back(main_seq[i]);
+				indices.push_back(i);
+			}
+			std::cout << "max_values dentro de loop: ";
+			print_vector(max_values);
+			std::cout << "indices dentro de loop: ";
+			print_vector(indices);
+			idx--;
+		}
+		curr_jac++;
+	}
 }
 
 void build_main_and_pend(std::vector<int>& numbers, std::vector<int>& main_seq, std::vector<int>& pend, size_t block_len) {
@@ -102,6 +114,7 @@ void build_main_and_pend(std::vector<int>& numbers, std::vector<int>& main_seq, 
 	main_seq.clear();
 	pend.clear();
 	size_t i = 0;
+	std::cout << "numbers: ";
 	print_vector(numbers);
 	while (i < block_len * 2) {
 		main_seq.push_back(numbers[i]);
@@ -136,17 +149,18 @@ void build_main_and_pend(std::vector<int>& numbers, std::vector<int>& main_seq, 
 	}
 	std::cout << "main: ";
 	print_vector(main_seq);
-	std::cout << "\n" << "pend: ";
+	std::cout << "pend: ";
 	print_vector(pend);
-	std::cout << "\n" << "non aticipating: ";
+	std::cout << "non aticipating: ";
 	print_vector(non_participating);
-	std::cout << "\n";
 	insert_pend_using_jacobsthal(main_seq, pend, block_len);
-    if (!non_participating.empty()) {
-        for (size_t i = 0; i != non_participating.size(); i++)
-            main_seq.push_back(non_participating[i]);
-    }
-    print_vector(main_seq);
+	if (!non_participating.empty()) {
+		for (size_t i = 0; i != non_participating.size(); i++)
+			main_seq.push_back(non_participating[i]);
+	}
+	std::cout << "main_seq after insertion: ";
+	print_vector(main_seq);
+	std::cout << "pend after insertion: ";
 	print_vector(pend);
 }
 
@@ -183,7 +197,7 @@ void sort_vector(std::vector<int>& numbers, size_t recursion_lvl) {
 	sort_vector(numbers, recursion_lvl + 1);
 	std::vector<int> main_seq, pend;
 	build_main_and_pend(numbers, main_seq, pend, block_len);
-    numbers = main_seq;
+	numbers = main_seq;
 	//insert_pend_using_jacobsthal(main_seq, pend);
 }
 
