@@ -41,7 +41,7 @@ bool already_sorted(const std::vector<int>& num) {
 int binary_search(std::vector<int> stack, int needle, int low, int high) {
 	while (low < high) {
 		int mid = low + (high - low) / 2;
-		if (comp(stack[mid], needle)) // stack[mid] < needle
+		if (stack[mid] < needle) // stack[mid] < needle
 			low = mid + 1;
 		else
 			high = mid;
@@ -77,24 +77,24 @@ void insert_pend_using_jacobsthal(std::vector<int>& main_seq, std::vector<int>& 
 		while (idx) {
 			//std::cout << "idx dentro de loop: " << idx << std::endl;
 			loc = binary_search(max_values, pend[block_len * idx - 1], 0, static_cast<int>(max_values.size()));
-			//std::cout << "pend[block_len * idx - 1]: "<< pend[block_len * idx - 1] << "\n";
-			//std::cout << "loc: " << loc << "\n";
+			/*std::cout << "pend[block_len * idx - 1]: "<< pend[block_len * idx - 1] << "\n";
+			std::cout << "loc: " << loc << "\n";*/
 			std::vector<int> block_to_insert(pend.begin() + block_len * (idx - 1), pend.begin() + block_len * idx);
-			/*std::cout << "block_to_insert: ";
-			print_vector(block_to_insert);*/
+			//std::cout << "block_to_insert: ";
+			//print_vector(block_to_insert);
 			if (comp(pend[block_len * idx - 1], max_values[0])) { // pend[block_len * idx - 1] < max_values[0]
 				main_seq.insert(main_seq.begin(), block_to_insert.begin(), block_to_insert.end());
 			} else {
 				size_t insert_pos = indices[loc - 1];
-				//std::cout << "insert_pos: " << insert_pos << "\n";
-				//std::cout << "posicion de insercion: " << main_seq[insert_pos + 1] << "\n";
+				/*std::cout << "insert_pos: " << insert_pos << "\n";
+				std::cout << "posicion de insercion: " << main_seq[insert_pos + 1] << "\n";*/
 				main_seq.insert(main_seq.begin() + insert_pos + 1, block_to_insert.begin(), block_to_insert.end());
-				/*std::cout << "main_seq dentro de loop: ";
-				print_vector(main_seq);*/
+				//std::cout << "main_seq dentro de loop: ";
+				//print_vector(main_seq);
 			}
 			pend.erase(pend.begin() + block_len * (idx - 1), pend.begin() + block_len * idx);
-			/*std::cout << "pend dentro de loop: ";
-			print_vector(pend);*/
+			//std::cout << "pend dentro de loop: ";
+			//print_vector(pend);
 			max_values.clear();
 			indices.clear();
 			for (size_t i = block_len - 1; i < main_seq.size(); i += block_len) {
@@ -143,7 +143,10 @@ void build_main_and_pend(std::vector<int>& numbers, std::vector<int>& main_seq, 
 		}
 		i += 2 * block_len;
 	}
-	i += block_len;
+	if (i + block_len <= n)
+		i += block_len;
+	/*std::cout << "i en build_main_and_pend: " << i << "\n";
+	std::cout << "numbers size: " << n << "\n";*/
 	if (i < n) {
 		while(i < n) {
 			non_participating.push_back(numbers[i]);
@@ -179,12 +182,10 @@ void sort_vector(std::vector<int>& numbers, size_t recursion_lvl) {
 	}
 	size_t block_len = std::pow(2, recursion_lvl - 1);
 	if (block_len * 2 > n) {
-		//std::cout << "fin de la recursion\n";
 		return ;
 	}
 	if (recursion_lvl > 1) {
 		for (size_t i = 0; i + block_len < n; i += 2 * block_len) {
-			//std::cout << i << "\n";
 			size_t first_block_start = i;
 			size_t second_block_start = i + block_len;
 			if (second_block_start + block_len > n) continue;
@@ -199,9 +200,11 @@ void sort_vector(std::vector<int>& numbers, size_t recursion_lvl) {
 	}
 	sort_vector(numbers, recursion_lvl + 1);
 	std::vector<int> main_seq, pend;
+	/*std::cout << "\n";
+	std::cout << "RECURSION LVL: " << recursion_lvl << std::endl;
+	std::cout << "\n";*/
 	build_main_and_pend(numbers, main_seq, pend, block_len);
 	numbers = main_seq;
-	//insert_pend_using_jacobsthal(main_seq, pend);
 }
 
 int main(int argc, char** argv) {
@@ -242,15 +245,13 @@ int main(int argc, char** argv) {
 	if (already_sorted(numbers)) {
 		std::cerr << "Error: numbers are already sorted\n";
 		return 1;
-	}
-	//clock_t before = clock();   
+	}  
 	sort_vector(numbers, 1);
 	std::cout << "Number of comparisons: " << nbr_of_comps << std::endl;
+	std::cout << "After: ";
 	for (size_t i = 0; i < numbers.size(); ++i) {
-        std::cout << numbers[i];
-        if (i < numbers.size() - 1) std::cout << " ";
-    }
-    std::cout << std::endl;
-	//clock_t after = clock() - before;
-	//std::cout << "duration:" << (float)after / CLOCKS_PER_SEC << std::endl;
+		std::cout << numbers[i];
+		if (i < numbers.size() - 1) std::cout << " ";
+	}
+	std::cout << std::endl;
 }
