@@ -72,7 +72,6 @@ void merge_insertion_sort(std::vector<int>& arr) {
 	}
 	while (i < left.size()) arr[k++] = left[i++];
     while (j < right.size()) arr[k++] = right[j++];
-
 }
 
 void binary_insert(std::vector<int>& main_chain, int value) {
@@ -83,19 +82,16 @@ void binary_insert(std::vector<int>& main_chain, int value) {
 void insert_b_into_main_chain(std::vector<int>& main_chain, std::vector<int>& smaller_numbers, int odd_element) {
 
 	if (odd_element != -1) {
-        binary_insert(main_chain, odd_element);
-    }
+		binary_insert(main_chain, odd_element);
+	}
 
 	if (!smaller_numbers.empty()) {
         binary_insert(main_chain, smaller_numbers[0]);
+		
     }
-	//primero calculamos k
 	
-	
-	size_t max_k = log2(smaller_numbers.size()) + 1; // tk depende del numero anterior y crece exponencialmente y aadimos uno por safety reasons
+	size_t max_k = log2(smaller_numbers.size()) + 2; // tk depende del numero anterior y crece exponencialmente y aadimos uno por safety reasons
 	std::vector<int> t = compute_t_vector(max_k);
-
-
 	
 
 	for (size_t k = 1; k < t.size(); k++) {
@@ -107,6 +103,7 @@ void insert_b_into_main_chain(std::vector<int>& main_chain, std::vector<int>& sm
 			}
 		}
 	}
+	
 }
 
 std::vector<int> sort_vector(std::vector<int>& numbers) {
@@ -125,8 +122,9 @@ std::vector<int> sort_vector(std::vector<int>& numbers) {
         odd_element = numbers[n - 1];
     }
 
-
+	
 	merge_insertion_sort(larger_numbers);
+	
 	insert_b_into_main_chain(larger_numbers, smaller_numbers, odd_element);
 
 	return larger_numbers;
