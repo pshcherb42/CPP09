@@ -22,3 +22,5 @@ The input file containing values that we need to convert and dates:
 
 The program in action:
 ![ex00](./resources/ex00.gif)
+
+EX01 EX02 Comming soon...
