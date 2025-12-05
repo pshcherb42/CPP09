@@ -2,8 +2,8 @@
 
 ## Exploring how STL and algoritms behave in real-world data processing
 
-Unos programas orientados al manejo de datos usando los contenedores de la STL. 
-El objetivo es elegir en cada ejercicio el algoritmo mas eficientes para cada caso especifico. 
-Incluye scripts de comparaciones de rendimiento, una parte de parsing, y el uso de algoritmos.
+A set of small programs focused on data processing using STL containers.
+The goal is to pick the most efficient algorithm for each specific exercise.
+It includes performance-comparison scripts, some parsing logic, and the use of various algorithms.
 
-
+![Containers](
