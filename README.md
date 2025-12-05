@@ -1,4 +1,4 @@
-## 📝 3 compact programs in C++ 
+## 3 compact programs in C++ 
 
 ## Exploring how STL and algoritms behave in real-world data processing
 
