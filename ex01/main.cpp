@@ -10,83 +10,20 @@ Para cada token:
 	* pop() dos números (b, a)
 	* Calcula: a operador b
 	* push() resultado*/
-#include <string>
-#include <iostream>
-#include <sstream>
-#include <stack>
-#include <cctype>
-#include <exception>
+#include "RPN.hpp"
 
 int main(int argc, char **argv) {
-	if (argc != 2) {
-		std::cerr << "Error: wrong number of arguments" << std::endl;
-		return 1;
-	}
-	std::string str;
-	std::stack<int> st;
-	std::stringstream ss(argv[1]);
-	while (std::getline(ss, str, ' ')) {
-		if (!std::isdigit(str[0]) && str[0] != '+' && str[0] != '-' && 
-    		str[0] != '*' && str[0] != '/') {
-    		std::cerr << "Error: invalid character\n";
-   			return 1;
-		}
-		else if (std::isdigit(str[0])) {
-			int num = std::stoi(str);
-			if (str.length() != 1) {
-        		std::cerr << "Error: number must be < 10\n";
-        		return 1;
-    		}
-			st.push(num);
-		}
-		else if (str[0] == '+') {
-			if (st.size() < 2) {
-    			std::cerr << "Error: not enough operands\n";
-    			return 1;
-			}
-			int b = st.top(); st.pop();
-			int a = st.top(); st.pop();
-			st.push(a + b);
-		}
-		else if (str[0] == '-') {
-			if (st.size() < 2) {
-    			std::cerr << "Error: not enough operands\n";
-    			return 1;
-			}
-			int b = st.top(); st.pop();
-			int a = st.top(); st.pop();
-			st.push(a - b);
-		}
-		else if (str[0] == '*') {
-			if (st.size() < 2) {
-    			std::cerr << "Error: not enough operands\n";
-    			return 1;
-			}
-			int b = st.top(); st.pop();
-            int a = st.top(); st.pop();
-            st.push(a * b);
-		}
-		else if (str[0] == '/') {
-			if (st.size() < 2) {
-    			std::cerr << "Error: not enough operands\n";
-    			return 1;
-			}
-			int b = st.top(); st.pop();
-            int a = st.top(); st.pop();
-			if (b == 0) {
-				std::cerr << "Error: division by zero\n";
-        		return 1;
-			}
-            st.push(a / b);
-		}
-	}
-	if (st.empty()) {
-    std::cerr << "Error: no operands\n";
-    return 1;
-	}
-	if (st.size() != 1) {
-	    std::cerr << "Error: too many operands\n";
-	    return 1;
-	}
-	std::cout << st.top() << std::endl;
+    if (argc != 2) {
+        std::cerr << "Error: wrong number of arguments" << std::endl;
+        return 1;
+    }
+    RPN rpn;
+    try {
+        int result = rpn.evaluate(argv[1]);
+        std::cout << result << std::endl;
+    } catch (const std::runtime_error& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        return 1;
+    }
+    return 0;
 }
