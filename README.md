@@ -39,21 +39,16 @@ The program in action:
 ![ex01](./resources/ex01.gif)
 
 
+## Exercise 02: PmergeMe
+
+## A program that takes a positive integer sequence as an argument and sorts it using the merge-insertion sort algorithm.
+
+This one was definitely my favorite and also the most challenging. I used this [article](https://dev.to/emuminov/human-explanation-and-step-by-step-visualisation-of-the-ford-johnson-algorithm-5g91) to guide me through the algorithm. I created [oldmane.cpp](./resources/oldmane.cpp), but I realized it was incorrect. The number of comparisons was too high. I mean that you should sort 21 numbers in a maximum of 66 comparisons, for example. I spent a month trying to figure it out. This error helped me understand the algorithm better. I looked at Knuth's [explanation](https://warwick.ac.uk/fac/sci/dcs/teaching/material-archive/cs341/fj.pdf). This time, I finally got it. 
+
+![paste Knuth's explanation here](./resources/Knuth.png)
+
+![tester](./resources/tester_ex02.gif)
+
+![ex02](./resources/ex02.gif)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-EX02 Comming soon...
